@@ -255,6 +255,7 @@ ggplot(combined_data, aes(x = group, y = species_count, fill = group)) +
        x = "Group", y = "Species Count") +
   theme_minimal()
 
+
 #2 Create a spatial heatmap to show areas where most records are concentrated.
 #This helps identify whether both taxa overlap in ecological regions.
 # Combine both datasets for comparison
@@ -299,4 +300,9 @@ combined_data <- bind_rows(worm_summary, cent_summary)
 combined_data <- combined_data %>% 
   mutate(ecoregion = gsub('_', ' ', ecoregion))
 print(combined_data)
+
+
+
+
+
 
