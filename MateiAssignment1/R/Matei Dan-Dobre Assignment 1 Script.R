@@ -280,6 +280,28 @@ ggplot(coord_data, aes(x = Long, y = Lat)) +
   ) +
   theme_minimal(base_size = 12)
 
+#3 To reduce repetition of codes, a function can take care of the two dataframes which makes the codes shorter
+# This function filters data by ecoregion and species, 
+
+# Create a reusable function to summarize species per group
+summarize_species <- function(df, eco_shared, group_name) {
+  df %>%
+    filter(ecoregion %in% eco_shared) %>%
+    group_by(ecoregion) %>%
+    summarise(species_count = n_distinct(species)) %>%
+    mutate(group = group_name)
+}
+
+# Apply the function to both datasets
+worm_summary <- summarize_species(dfWORM, SharedEco, "Velvet Worm")
+cent_summary <- summarize_species(ddCENT, SharedEco, "Centipede")
+# Step 2: Combine into one dataframe
+combined_data <- bind_rows(worm_summary, cent_summary)
+combined_data <- combined_data %>% 
+  mutate(ecoregion = gsub('_', ' ', ecoregion))
+print(combined_data)
+
+
 
 
 
