@@ -254,3 +254,27 @@ ggplot(combined_data, aes(x = group, y = species_count, fill = group)) +
        subtitle = paste("p-value:", signif(t_test_result$p.value, 3)),
        x = "Group", y = "Species Count") +
   theme_minimal()
+
+#2 Create a spatial heatmap to show areas where most records are concentrated.
+#This helps identify whether both taxa overlap in ecological regions.
+# Combine both datasets for comparison
+all_data <- bind_rows(
+  dfWORM_clean %>% mutate(group = "Onychophora"),
+  ddCENT_clean %>% mutate(group = "Chilopoda")
+)
+coord_data <- all_data %>%
+  separate(coord, into = c("Lat","Long"), sep = ",", convert = FALSE) %>%
+  mutate(Lat  = as.numeric(str_replace_all(Lat, "[^0-9.-]", "")), Long = as.numeric(str_replace_all(Long, "[^0-9.-]", "")))
+# Create a spatial heatmap showing density of records
+ggplot(coord_data, aes(x = Long, y = Lat)) +
+  geom_bin2d(bins = 50) +
+  scale_fill_viridis_c(option = "D", direction = 1) +
+  facet_wrap(~ group) +
+  labs(
+    title = "Species Occurrence Density by Geographic Location",
+    subtitle = "Comparing Onychophora and Chilopoda Spatial Hotspots",
+    x = "Longitude",
+    y = "Latitude",
+    fill = "Record Count"
+  ) +
+  theme_minimal(base_size = 12)
