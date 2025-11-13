@@ -236,3 +236,21 @@ heatmap_plot <- ggplot(heatmap_df, aes(x = WORM_Index, y = CENT_Index, fill = Pe
 # Save to JPEG
 ggsave("similarity_heatmap.jpg", plot = heatmap_plot, width = 10, height = 8, dpi = 1200)
 #I did this because the figure was too large to fit in the rstudio viewer. I also had to increase the dpi because the figure was blurry, but I don't think it made much of a difference
+
+
+
+#1 Statistical analysis
+# Simple t-test comparing average species count between the two groups
+t_test_result <- t.test(species_count ~ group, data = combined_data)
+print(t_test_result)
+#This test adds a basic statistical comparison — showing whether Velvet Worms and Centipedes differ significantly in mean species richness per ecoregion
+
+#provided a pictorial representation of the statistical report
+# Add summary boxplot
+ggplot(combined_data, aes(x = group, y = species_count, fill = group)) +
+  geom_boxplot(alpha = 0.7) +
+  scale_fill_manual(values = c("purple", "orange")) +
+  labs(title = "Species Richness Comparison",
+       subtitle = paste("p-value:", signif(t_test_result$p.value, 3)),
+       x = "Group", y = "Species Count") +
+  theme_minimal()
